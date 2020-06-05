@@ -1,0 +1,11 @@
+body {
+  font-family: sans-serif;
+}
+
+body > div {
+  min-width: 310px; 
+  height: 500px; 
+  padding: 2rem;
+  margin: 3rem;
+  border: 1px dashed cornflowerblue;
+}

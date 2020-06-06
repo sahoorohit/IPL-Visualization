@@ -3,8 +3,11 @@ const csv = require("csvtojson");
 
 const matchesPlayedPerYear = require("./ipl/matchesPlayedPerYear");
 const extraaRunsByTeams = require("./ipl/extraaRunsByTeams");
+const economicalBowlerIn2015 = require("./ipl/economicalBowlerIn2015");
+
 
 const MATCHES_FILE_PATH = "./csv_data/matches.csv";
+const DELIVERIES_FILE_PATH = "./csv_data/deliveries.csv";
 
 const JSON_OUTPUT_FILE_PATH = "./public/data.json";
 
@@ -16,11 +19,18 @@ function main() {
       let result = matchesPlayedPerYear(matches);
       let result3 = extraaRunsByTeams(matches);
 
-      const jsonData = {
-        matchesPlayedPerYear: result,
-        extraaRunsByTeams: result3
-      };
-      saveData(jsonData);
+      csv()
+        .fromFile(DELIVERIES_FILE_PATH)
+        .then(deliveries => {
+          let result4 = economicalBowlerIn2015(matches, deliveries);
+
+          const jsonData = {
+            matchesPlayedPerYear: result,
+            extraaRunsByTeams: result3,
+            economicalBowler2015: result4
+          };
+          saveData(jsonData);
+        });          
     });
 }
 

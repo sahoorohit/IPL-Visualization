@@ -8,6 +8,7 @@ fetchAndVisualizeData();
 
 function visualizeData(data) {
   visualizeMatchesPlayedPerYear(data.matchesPlayedPerYear);
+  visualizeMatchesWonByEachTeam(data.matchesWonByEachTeam);
   visualizeExtraaRunsByTeams2016(data.extraaRunsByTeams);
   visualizeEconomicalBowler2015(data.economicalBowler2015);
   return;
@@ -122,10 +123,10 @@ function visualizeExtraaRunsByTeams2016(extraaRunsByTeams) {
 }
 
 
-function visualizeEconomicalBowler2015(extraaRunsByTeams) {
+function visualizeEconomicalBowler2015(economicalBowler2015) {
   const seriesData = [];
-  for (let team in extraaRunsByTeams) {
-    seriesData.push([team, extraaRunsByTeams[team]]);
+  for (let team in economicalBowler2015) {
+    seriesData.push([team, economicalBowler2015[team]]);
   }
 
   Highcharts.chart("economical-bowler-of-2015", {
@@ -172,5 +173,79 @@ function visualizeEconomicalBowler2015(extraaRunsByTeams) {
         }
       }
     ]
+  });
+}
+
+
+function visualizeMatchesWonByEachTeam(matchesWonByEachTeam){
+  const categories = [];
+  const teams = [];
+  const seriesData = [];
+
+  for (let year in matchesWonByEachTeam){
+    categories.push(year);
+    for (let team in matchesWonByEachTeam[year]){
+      if (!teams[team])
+      teams[team] = [];
+    }
+  }
+
+  // console.log(categories);
+
+  for (let team in teams){
+    categories.map(function(year){
+      if(!matchesWonByEachTeam[year][team])
+        teams[team].push(0);
+      else 
+        teams[team].push(matchesWonByEachTeam[year][team]);
+    }) 
+  }
+
+  // console.log(teams);
+
+  for (let team in teams){
+    let ele = {};
+    ele.name = team;
+    ele.data = teams[team];
+    seriesData.push(ele);
+  }
+
+  console.log(seriesData);
+
+  Highcharts.chart('matches-won-by-each-team', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: '2. Number of matches won by each team over all the years of IPL'
+    },
+    subtitle: {
+        text: 'Source: <a href="https://www.kaggle.com/nowke9/ipldata/data">IPL Dataset</a>'
+    },
+    xAxis: {
+        categories: categories,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Matches won'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: seriesData
   });
 }

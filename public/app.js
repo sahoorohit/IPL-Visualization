@@ -11,6 +11,8 @@ function visualizeData(data) {
   visualizeMatchesWonByEachTeam(data.matchesWonByEachTeam);
   visualizeExtraaRunsByTeams2016(data.extraaRunsByTeams);
   visualizeEconomicalBowler2015(data.economicalBowler2015);
+  visualizematchesWonByTeamsEachVenue(data.matchesWonByTeamsEachVenue);
+
   return;
 }
 
@@ -210,7 +212,7 @@ function visualizeMatchesWonByEachTeam(matchesWonByEachTeam){
     seriesData.push(ele);
   }
 
-  console.log(seriesData);
+  // console.log(seriesData);
 
   Highcharts.chart('matches-won-by-each-team', {
     chart: {
@@ -248,4 +250,69 @@ function visualizeMatchesWonByEachTeam(matchesWonByEachTeam){
     },
     series: seriesData
   });
+}
+
+
+function visualizematchesWonByTeamsEachVenue(matchesWonByTeamsEachVenue){
+  const categories = [];
+  const teams = [];
+  const seriesData = [];
+
+  for (let venue in matchesWonByTeamsEachVenue){
+    categories.push(venue);
+    for (let team in matchesWonByTeamsEachVenue[venue]){
+      if (!teams[team])
+      teams[team] = [];
+    }
+  }
+
+  // console.log(categories);
+
+  for (let team in teams){
+    categories.map(function(venue){
+      if(!matchesWonByTeamsEachVenue[venue][team])
+        teams[team].push(0);
+      else 
+        teams[team].push(matchesWonByTeamsEachVenue[venue][team]);
+    }) 
+  }
+
+  // console.log(teams);
+
+  for (let team in teams){
+    let ele = {};
+    ele.name = team;
+    ele.data = teams[team];
+    seriesData.push(ele);
+  }
+
+  // console.log(seriesData);
+
+  Highcharts.chart('matches-won-by-teams-each-venue', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: '5. Story: Matches Won by each team per venue'
+    },
+    xAxis: {
+        categories: categories
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Matches won vs stadium'
+        }
+    },
+    legend: {
+        reversed: true
+    },
+    plotOptions: {
+        series: {
+            stacking: 'normal'
+        }
+    },
+    series: seriesData
+});
+
 }

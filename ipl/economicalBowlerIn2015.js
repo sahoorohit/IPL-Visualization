@@ -10,35 +10,32 @@ function economicalBowlerIn2015(matches, deliveries) {
     }
   }
 
-  // getting bowler name, overs and runs 
+  // getting bowler name and runs 
   for (let deli of deliveries){
     const id = deli.match_id;
     if(matchIds.includes(id)){
       const bowler = deli.bowler;
-      const run = parseInt(deli.total_runs);
       const ball = parseInt(deli.ball);
+      const run = parseInt(deli.total_runs);
 
-      if(result[bowler]){
-        if(ball < result[bowler].ball){
-          result[bowler].over += 1;
-        }
-        
-        result[bowler].ball = ball;
+      if(result[bowler]){   
+        if(ball <= 6)
+          result[bowler].ball += 1;
         result[bowler].run += run;
       }else {
         result[bowler] = {
-          "over": 1,
           "run": run,
-          "ball": ball
+          "ball": 1
         }
       }
     }
   }
 
+  // console.log(result);
   // claculating bowler economy 
   let bowlerEconomy = {};
   for(let bowler in result) {
-    bowlerEconomy[bowler] = result[bowler].run / result[bowler].over;
+    bowlerEconomy[bowler] = (result[bowler].run * 6)/ result[bowler].ball;
   }
 
   // sorting according ascending order of economy 
@@ -57,6 +54,7 @@ function economicalBowlerIn2015(matches, deliveries) {
     finalResult[item[0]] = item[1];
   })
 
+  // console.log(finalResult);
   return finalResult;
 }
 

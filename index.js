@@ -19,12 +19,12 @@ function main() {
     .then(matches => {
       let result = matchesPlayedPerYear(matches);
       let result2 = matchesWonByEachTeam(matches);
-      let result3 = extraaRunsByTeams(matches);
       let result5 = matchesWonByTeamsEachVenue(matches);
       
       csv()
         .fromFile(DELIVERIES_FILE_PATH)
         .then(deliveries => {
+          let result3 = extraaRunsByTeams(matches, deliveries);
           let result4 = economicalBowlerIn2015(matches, deliveries);
 
           const jsonData = {
